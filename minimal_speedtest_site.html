@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Speed Test — Minimal</title>
+    <script src="https://cdn.jsdelivr.net/gh/adolfintel/speedtest/speedtest.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-white text-gray-900 flex flex-col items-center justify-center h-screen font-sans">
+    <h1 class="text-3xl font-bold mb-6">Check Your Internet Speed</h1>
+    <div id="status" class="text-lg mb-4">Click start to begin</div>
+    <div id="result" class="text-6xl font-bold mb-6">0 Mbps</div>
+    <button id="startBtn" class="bg-blue-600 text-white px-6 py-3 rounded-2xl shadow-lg hover:bg-blue-700 transition">Start Test</button>
+
+    <script>
+      const startBtn = document.getElementById("startBtn");
+      const status = document.getElementById("status");
+      const result = document.getElementById("result");
+
+      let s = new Speedtest();
+
+      function updateUI(data) {
+        if (data.testState === 1) {
+          status.textContent = "Testing download speed...";
+          result.textContent = Math.round(data.dlStatus) + " Mbps";
+        } else if (data.testState === 3) {
+          status.textContent = "Testing upload speed...";
+          result.textContent = Math.round(data.ulStatus) + " Mbps";
+        } else if (data.testState === 4) {
+          status.textContent = "Test complete";
+          result.textContent = "↓ " + Math.round(data.dlStatus) + " Mbps / ↑ " + Math.round(data.ulStatus) + " Mbps";
+        }
+      }
+
+      startBtn.addEventListener("click", () => {
+        s.onupdate = updateUI;
+        s.start();
+      });
+    </script>
+  </body>
+</html>
